@@ -1,33 +1,26 @@
 import os
 import csv
-from hybrid_llm_evaluation import evaluate_essay
-from hybrid_llm_evaluation import RATER_SPECIALIZATIONS, RUBRIC_MAPPING 
+import json
 
-# Configuration
-ESSAY_FOLDER = "QCAW_Arabic"
-OUTPUT_CSV = "essay_scores_full.csv"
-MAX_ESSAYS = 195
+from prediction_prompt_2 import evaluate_essay, RATER_SPECIALIZATIONS, RUBRIC_MAPPING
+from utils import load_essays
 
-def load_essays(folder, limit=40):
-    """Load essays from text files"""
-    essays = []
-    for fname in sorted(os.listdir(folder))[:limit]:
-        if fname.endswith(".txt"):
-            with open(os.path.join(folder, fname), encoding="utf-8") as f:
-                essays.append((fname.replace(".txt", ""), f.read()))
-    return essays
+with open("main_config.json", "r") as f:
+    config = json.load(f)
+
+# Configuration 
+ESSAY_FOLDER = config["essay_folder"]
+OUTPUT_CSV = "predictions/prompt_level_2.csv"
+MAX_ESSAYS = config["max_essays"]
 
 def save_to_csv(results, filename):
-    """Save results to CSV with proper encoding"""
-    if not results:
-        return
-    
-    # Generate comprehensive fieldnames
+    # Define the fieldnames for the CSV file
     fieldnames = ["essay_id"]
     fieldnames.extend([f"rater_{r}" for r in RATER_SPECIALIZATIONS.keys()])
     fieldnames.extend(RUBRIC_MAPPING.keys())
-    fieldnames.append("total")
+    fieldnames.append("final_score")
     
+    # Save the results to the CSV file
     with open(filename, mode="w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -35,7 +28,7 @@ def save_to_csv(results, filename):
 
 def main():
     print("🔍 Loading essays...")
-    essays = load_essays(ESSAY_FOLDER, MAX_ESSAYS)
+    essays = load_essays(ESSAY_FOLDER, limit=MAX_ESSAYS)
     
     print(f"✅ Starting evaluation of {len(essays)} essays...")
     results = []                                                                          

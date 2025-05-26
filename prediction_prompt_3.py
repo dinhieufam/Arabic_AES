@@ -3,6 +3,8 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import json
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 RUBRIC_GUIDES = {
     "organization": {
         "arabic": "التنظيم",
@@ -68,14 +70,52 @@ def build_prompt(rubric, essay_text):
 """
 
 def run_model_and_parse_response(model_name, rubric, essay_text):
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name, 
+        trust_remote_code=True,
+        device_map="auto"
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, 
+        torch_dtype=torch.float16, 
+        trust_remote_code=True,
+        device_map="auto"
+    )
+
+    model.eval()
+
     prompt = build_prompt(rubric, essay_text)
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-    output = model.generate(**inputs, max_new_tokens=512)
-    decoded = tokenizer.decode(output[0], skip_special_tokens=True)
+
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt}
+    ]
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True
+    )
+
+    inputs = tokenizer([text], return_tensors="pt").to(device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            inputs.input_ids,
+            max_new_tokens=512
+        )
+
+    generated_ids = [
+        output_ids[len(input_ids):] for input_ids, output_ids in zip(inputs.input_ids, outputs)
+    ]
+
+    decoded_output = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+    output = decoded_output[0]
+
+    print(f"Raw Output:\n {output}")
+
     try:
-        json_data = json.loads(decoded.split("{", 1)[1].rsplit("}", 1)[0].join(["{", "}"]))
+        json_data = json.loads(output.split("{", 1)[1].rsplit("}", 1)[0].join(["{", "}"]))
     except Exception as e:
         json_data = {"score": 0, "justification": f"Parsing error: {str(e)}"}
+        
     return json_data

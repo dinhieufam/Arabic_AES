@@ -1,0 +1,7 @@
+{
+  "paths": {
+    "ground_truth": "dataset.csv",
+    "model_predictions": "predictions/model_1/prompt_level_3.csv",
+    "output": "evaluation_results/model_1/prompt_level_3.csv"
+  }
+}

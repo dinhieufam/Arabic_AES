@@ -1,29 +1,32 @@
-
-import argparse
 import csv
-from prompt_rubric_evaluator import run_model_and_parse_response
+import json
+
+from prediction_prompt_3 import run_model_and_parse_response
 from utils import load_essays
 
-OUTPUT_CSV = "rubric_scores_qwen.csv"
+with open("main_config.json", "r") as f:
+    config = json.load(f)
+
+OUTPUT_CSV = "predictions/prompt_level_3.csv"
+MAX_ESSAYS = config["max_essays"]
+MODEL_NAME = config["model_name"]
+
 RUBRICS = ["organization", "vocabulary", "style", "development", "mechanics", "structure", "relevance"]
 
 def save_to_csv(results, filename):
+    # Define the fieldnames for the CSV file
     fieldnames = ["essay_id"] + RUBRICS + ["final_score"]
+
+    # Write the fieldnames to the CSV file
     with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(results)
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=3, help="Number of essays to process")
-    parser.add_argument("--model", type=str, required=True, help="Model name on Hugging Face")
-    args = parser.parse_args()
+    print(f"🔢 Limiting evaluation to {MAX_ESSAYS} essays...")
 
-    print(f"🔢 Limiting evaluation to {args.limit} essays...")
-    print(f"🧠 Using model: {args.model}")
-
-    essays = load_essays("essays", limit=args.limit)
+    essays = load_essays("essays", limit=MAX_ESSAYS)
     results = []
 
     for i, (essay_id, text) in enumerate(essays):
@@ -31,7 +34,7 @@ def main():
         row = {"essay_id": essay_id}
         total = 0
         for rubric in RUBRICS:
-            result = run_model_and_parse_response(args.model, rubric, text)
+            result = run_model_and_parse_response(MODEL_NAME, rubric, text)
             score = float(result.get("score", 0))
             row[rubric] = score
             total += score
