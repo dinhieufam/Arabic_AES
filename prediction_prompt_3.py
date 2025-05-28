@@ -1,4 +1,3 @@
-
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import json
@@ -45,6 +44,10 @@ RUBRIC_GUIDES = {
 
 def build_prompt(rubric, essay_text):
     rubric_info = RUBRIC_GUIDES[rubric]
+
+    with open(f'rubric_examples/{rubric}.txt', 'r', encoding='utf-8') as f:
+        example = f.read()
+
     return f"""
 أنت مقيم لغوي مختص في تقييم مهارة [{rubric_info['arabic']}] في المقالات المكتوبة باللغة العربية.
 
@@ -56,6 +59,14 @@ def build_prompt(rubric, essay_text):
 {rubric_info['guide']}
 3. حدد درجة من {rubric_info['scoring']}.
 4. قدم مبررات واضحة لقرارك.
+
+يتضمن المعيار أدناه:
+- وصفًا لما يقيسه
+- ثلاثة مستويات كأمثلة (الدرجات: ١، ٣، ٥)
+\"\"\"
+{example}
+\"\"\"
+🎯 استخدم هذه الأمثلة لمقارنة المقال الذي تقوم بتقييمه وتبرير النتيجة وفقًا لذلك.
 
 ✏️ المقال:
 \"\"\"
@@ -86,6 +97,8 @@ def run_model_and_parse_response(model_name, rubric, essay_text):
 
     prompt = build_prompt(rubric, essay_text)
 
+    # print(prompt)
+
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": prompt}
@@ -113,9 +126,14 @@ def run_model_and_parse_response(model_name, rubric, essay_text):
 
     print(f"Raw Output:\n {output}")
 
+    json_data = {}
     try:
-        json_data = json.loads(output.split("{", 1)[1].rsplit("}", 1)[0].join(["{", "}"]))
+        # json_data = json.loads(output.split("{", 1)[1].rsplit("}", 1)[0].join(["{", "}"]))
+        score_match = output.split('"score": ')[1].split(',')[0]
+        # print(f"Score Match:\n {score_match}")
+        json_data["score"] = float(score_match)
+        print(f"JSON Data:\n {json_data}")
     except Exception as e:
         json_data = {"score": 0, "justification": f"Parsing error: {str(e)}"}
-        
+
     return json_data

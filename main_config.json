@@ -1,6 +1,6 @@
 {
   "essay_folder": "essays",
   "max_essays": 195,
-  "model_name": "Qwen/Qwen2.5-7B",
-  "ground_truth": "QAES_trait_scores_with_final.xlsx"
+  "model_name": "Qwen/Qwen2.5-7B-Instruct",
+  "ground_truth": "dataset.csv"
 }

@@ -10,7 +10,7 @@ with open("main_config.json", "r") as f:
 
 # Configuration 
 ESSAY_FOLDER = config["essay_folder"]
-OUTPUT_CSV = "predictions/prompt_level_2.csv"
+OUTPUT_CSV = "predictions/model_2/prompt_level_2.csv"
 MAX_ESSAYS = config["max_essays"]
 
 def save_to_csv(results, filename):

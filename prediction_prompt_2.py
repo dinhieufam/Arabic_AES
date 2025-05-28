@@ -77,7 +77,14 @@ def evaluate_essay(essay_id: str, text: str):
     D: {RATER_SPECIALIZATIONS['D']}
     E: {RATER_SPECIALIZATIONS['E']}
 
-    Return only a valid JSON object.
+    Return ONLY this JSON object with your scores (replace X with actual numbers):
+    {{
+        "A": X,
+        "B": X,
+        "C": X,
+        "D": X,
+        "E": X
+    }}
 
     Essay:
     {text}
@@ -114,26 +121,23 @@ def evaluate_essay(essay_id: str, text: str):
     try:
         json_start = output.find('{')
         print("Found JSON at index:", json_start)
-        # Find the 6th closing brace after the opening brace
+        # Find the first closing brace after the opening brace
         json_end = json_start
-        brace_count = 0
         for i in range(json_start, len(output)):
             if output[i] == '}':
-                brace_count += 1
-                if brace_count == 6:
-                    json_end = i + 1
-                    break
+                json_end = i + 1
+                break
         json_str = output[json_start:json_end]
         print("JSON string:", repr(json_str))  # Using repr() to see hidden characters
         print("JSON string length:", len(json_str))
         print("First few characters:", [ord(c) for c in json_str[:10]])  # Print ASCII values of first few chars
         parsed = json.loads(json_str)
         scores = {
-            "A": parsed.get("A", {}).get("score", 0),
-            "B": parsed.get("B", {}).get("score", 0), 
-            "C": parsed.get("C", {}).get("score", 0),
-            "D": parsed.get("D", {}).get("score", 0),
-            "E": parsed.get("E", {}).get("score", 0)
+            "A": min(parsed.get("A", 0), 5),
+            "B": min(parsed.get("B", 0), 5), 
+            "C": min(parsed.get("C", 0), 5),
+            "D": min(parsed.get("D", 0), 5),
+            "E": min(parsed.get("E", 0), 5)
         }
     except Exception as e:
         print("❌ Failed to parse JSON:", e)

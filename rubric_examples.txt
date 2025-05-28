@@ -1,4 +1,3 @@
-
 # Arabic Essay Scoring Guide with Examples
 # This guide helps the GPT model evaluate essays more accurately.
 

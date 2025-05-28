@@ -55,11 +55,11 @@ run_evaluation() {
 
 # List of models to evaluate
 models=(
-    "Qwen/Qwen1.5-1.8B"
-    "Qwen/Qwen2.5-7B"
-    "ALLaM-AI/ALLaM-7B-Instruct-preview"
-    "mistralai/Mistral-7B-Instruct-v0.2"
-    "NousResearch/Hermes-2-Pro-Llama-3-8B"
+    "Qwen/Qwen1.5-1.8B-Chat"
+    # "Qwen/Qwen2.5-7B"
+    # "ALLaM-AI/ALLaM-7B-Instruct-preview"
+    # "mistralai/Mistral-7B-Instruct-v0.2"
+    # "NousResearch/Hermes-2-Pro-Llama-3-8B"
 )
 
 # Run evaluation for each model

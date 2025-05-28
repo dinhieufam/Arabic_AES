@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import cohen_kappa_score
+import statsmodels.stats.inter_rater
 import json
 import os
 
@@ -18,8 +19,8 @@ def calculate_qwk(ground_truth, predictions, min_rating=0, max_rating=5):
     Calculate Quadratic Weighted Kappa between two raters
     
     Args:
-        rater_a: Ratings from first rater
-        rater_b: Ratings from second rater
+        ground_truth: Ground truth ratings
+        predictions: Predicted ratings
         min_rating: Minimum possible rating
         max_rating: Maximum possible rating
         
@@ -30,7 +31,7 @@ def calculate_qwk(ground_truth, predictions, min_rating=0, max_rating=5):
     predictions = np.array(predictions, dtype=int)
     
     return cohen_kappa_score(
-        ground_truth, 
+        ground_truth,
         predictions,
         weights='quadratic'
     )
