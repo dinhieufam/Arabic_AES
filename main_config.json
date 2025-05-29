@@ -1,6 +1,6 @@
 {
   "essay_folder": "essays",
   "max_essays": 195,
-  "model_name": "Qwen/Qwen2.5-7B-Instruct",
+  "model_name": "ALLaM-AI/ALLaM-7B-Instruct-preview",
   "ground_truth": "dataset.csv"
 }
