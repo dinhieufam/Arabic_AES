@@ -56,9 +56,14 @@ RUBRIC_MAX_SCORES = {
 # Load model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(
     MODEL_NAME, 
-    trust_remote_code=False,
-    device_map="auto"
+    use_fast=False,
+    trust_remote_code=False
 )
+
+# Set pad_token to eos_token if missing
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME, 
     torch_dtype=torch.float16, 
@@ -101,20 +106,30 @@ def evaluate_essay(essay_id: str, text: str):
         add_generation_prompt=True
     )
 
-    inputs = tokenizer([text], return_tensors="pt").to(device)
+    # Tokenize with padding and truncation, and move to device
+    encoded = tokenizer(
+        text,
+        return_tensors="pt",
+        padding="longest",
+        truncation=True
+    ).to(device)
 
+    input_ids = encoded["input_ids"]
+    attention_mask = encoded["attention_mask"]
+
+    # Generate model output with attention mask
     with torch.no_grad():
         outputs = model.generate(
-            inputs.input_ids, 
+            input_ids=input_ids,
+            attention_mask=attention_mask,
             max_new_tokens=512
         )
 
     generated_ids = [
-        output_ids[len(input_ids):] for input_ids, output_ids in zip(inputs.input_ids, outputs)
+        output_ids[len(input_ids):] for input_ids, output_ids in zip(input_ids, outputs)
     ]
 
     decoded_output = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-
     output = decoded_output[0]
 
     # print(f"Raw Output:\n {output}")

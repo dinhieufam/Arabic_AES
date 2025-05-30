@@ -34,6 +34,11 @@ def main():
         trust_remote_code=False,
         device_map="auto"
     )
+
+    # ✅ Set pad_token to eos_token if missing
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME, 
         torch_dtype="auto", 

@@ -1,5 +1,6 @@
 import torch
 import json
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -39,16 +40,28 @@ def run_model_and_parse_response(essay_text, model, tokenizer):
         tokenize=False,
         add_generation_prompt=True
     )
-    inputs = tokenizer([text], return_tensors="pt").to(device)
 
+    # Tokenize with padding and truncation, and move to device
+    encoded = tokenizer(
+        text,
+        return_tensors="pt",
+        padding="longest",
+        truncation=True
+    ).to(device)
+
+    input_ids = encoded["input_ids"]
+    attention_mask = encoded["attention_mask"]
+
+    # Generate model output with attention mask
     with torch.no_grad():
         outputs = model.generate(
-            inputs.input_ids,
+            input_ids=input_ids,
+            attention_mask=attention_mask,
             max_new_tokens=512
         )
 
     generated_ids = [
-        output_ids[len(input_ids):] for input_ids, output_ids in zip(inputs.input_ids, outputs)
+        output_ids[len(input_ids):] for input_ids, output_ids in zip(input_ids, outputs)
     ]
 
     decoded_output = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
