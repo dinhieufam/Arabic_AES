@@ -14,23 +14,23 @@ MODEL_NAME = config["model_name"]
 RATER_SPECIALIZATIONS = {
             "A": "Evaluate the essay's organization and how well ideas are connected. "
                  "Consider logical flow, paragraph structure, and transitions. "
-                 "Provide a score between 0-5 with 0.1 increments.",
+                 "Provide a score between 0-5",
             
             "B": "Assess the vocabulary quality and lexical variety in the essay. "
                  "Consider word choice, sophistication, and avoidance of repetition. "
-                 "Provide a score between 0-5 with 0.1 increments.",
+                 "Provide a score between 0-5",
             
             "C": "Evaluate grammar, spelling, punctuation, and mechanical accuracy. "
                  "Identify errors and assess their impact on readability. "
-                 "Provide a score between 0-5 with 0.1 increments.",
+                 "Provide a score between 0-5",
             
             "D": "Analyze content development and reasoning quality. "
                  "Consider depth of analysis, argument strength, and evidence use. "
-                 "Provide a score between 0-5 with 0.1 increments.",
+                 "Provide a score between 0-5",
             
             "E": "Assess style, tone, and contextual appropriateness. "
                  "Consider voice, audience awareness, and stylistic effectiveness. "
-                 "Provide a score between 0-5 with 0.1 increments."
+                 "Provide a score between 0-5"
         }
 
 RUBRIC_MAPPING = {
@@ -50,19 +50,20 @@ RUBRIC_MAX_SCORES = {
     "development": 5,
     "mechanics": 5,
     "structure": 5,
-    "relevance": 2
+    "relevance": 5
 }
 
 # Load model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(
     MODEL_NAME, 
-    trust_remote_code=True,
+    trust_remote_code=False,
     device_map="auto"
 )
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME, 
     torch_dtype=torch.float16, 
-    trust_remote_code=True, device_map="auto"
+    trust_remote_code=False, 
+    device_map="auto"
 )
 
 model.eval()
@@ -120,7 +121,7 @@ def evaluate_essay(essay_id: str, text: str):
 
     try:
         json_start = output.find('{')
-        print("Found JSON at index:", json_start)
+        # print("Found JSON at index:", json_start)
         # Find the first closing brace after the opening brace
         json_end = json_start
         for i in range(json_start, len(output)):
@@ -128,16 +129,16 @@ def evaluate_essay(essay_id: str, text: str):
                 json_end = i + 1
                 break
         json_str = output[json_start:json_end]
-        print("JSON string:", repr(json_str))  # Using repr() to see hidden characters
-        print("JSON string length:", len(json_str))
-        print("First few characters:", [ord(c) for c in json_str[:10]])  # Print ASCII values of first few chars
+        # print("JSON string:", repr(json_str))  # Using repr() to see hidden characters
+        # print("JSON string length:", len(json_str))
+        # print("First few characters:", [ord(c) for c in json_str[:10]])  # Print ASCII values of first few chars
         parsed = json.loads(json_str)
         scores = {
-            "A": min(parsed.get("A", 0), 5),
-            "B": min(parsed.get("B", 0), 5), 
-            "C": min(parsed.get("C", 0), 5),
-            "D": min(parsed.get("D", 0), 5),
-            "E": min(parsed.get("E", 0), 5)
+            "A": int(min(parsed.get("A", 0), 5)),
+            "B": int(min(parsed.get("B", 0), 5)), 
+            "C": int(min(parsed.get("C", 0), 5)),
+            "D": int(min(parsed.get("D", 0), 5)),
+            "E": int(min(parsed.get("E", 0), 5))
         }
     except Exception as e:
         print("❌ Failed to parse JSON:", e)
@@ -150,18 +151,16 @@ def evaluate_essay(essay_id: str, text: str):
             "E": 0,
         }
 
-    # # Extract the last valid JSON structure
-    # matches = re.findall(r'{\s*"A":\s*\d,\s*"B":\s*\d,\s*"C":\s*\d,\s*"D":\s*\d,\s*"E":\s*\d\s*}', output)
-    # if matches:
-    #     scores = json.loads(matches[-1])
-    # else:
-    #     print("❌ Failed to parse JSON from:", output)
-    #     scores = {key: 0 for key in RATER_SPECIALIZATIONS.keys()}
-
     # Map back to full rubric categories
     rubric_scores = {"essay_id": essay_id}
     for rubric, keys in RUBRIC_MAPPING.items():
         rubric_scores[rubric] = min(sum(scores.get(k, 0) for k in keys) // len(keys), RUBRIC_MAX_SCORES[rubric])
+
+    # Normalize relevance score to 0-2
+    rubric_scores["relevance"] = round(rubric_scores["relevance"] / 5 * 2)
+
+    # Calculate final score
+    rubric_scores["final_score"] = rubric_scores["organization"] + rubric_scores["vocabulary"] + rubric_scores["style"] + rubric_scores["development"] + rubric_scores["mechanics"] + rubric_scores["structure"] + rubric_scores["relevance"]
 
     rubric_scores.update({f"rater_{k}": scores.get(k, 0) for k in RATER_SPECIALIZATIONS})
     return rubric_scores

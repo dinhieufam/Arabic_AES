@@ -1,13 +1,15 @@
 import csv
 import json
+import torch
 
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from prediction_prompt_1 import run_model_and_parse_response
 from utils import load_essays
 
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_3/prompt_level_1.csv"
+OUTPUT_CSV = "predictions/model_2/prompt_level_1.csv"
 MAX_ESSAYS = config["max_essays"]
 ESSAY_FOLDER = config["essay_folder"]
 MODEL_NAME = config["model_name"]
@@ -27,14 +29,34 @@ def main():
     print(f"🔢 Limiting evaluation to {MAX_ESSAYS} essays...")
     print(f"🧠 Using model: {MODEL_NAME}")
 
+    tokenizer = AutoTokenizer.from_pretrained(
+        MODEL_NAME, 
+        trust_remote_code=False,
+        device_map="auto"
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_NAME, 
+        torch_dtype="auto", 
+        trust_remote_code=False,
+        device_map="auto",
+    )
+
+    model.eval()
+
     essays = load_essays(ESSAY_FOLDER, limit=MAX_ESSAYS)
     results = []
 
     for i, (essay_id, text) in enumerate(essays, start=1):
         print(f"  ⏳ Processing essay {i}/{len(essays)}: {essay_id}")
-        scores = run_model_and_parse_response(text, MODEL_NAME)
+        scores = run_model_and_parse_response(text, model, tokenizer)
+
+        # Add essay_id to the scores dictionary
         scores["essay_id"] = essay_id
+
+        # Append the scores to the results list
         results.append(scores)
+
+        print(scores)
 
     save_to_csv(results, OUTPUT_CSV)
     print(f"💾 Saved results to {OUTPUT_CSV}")

@@ -1,5 +1,4 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import json
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -12,11 +11,9 @@ You are an expert Arabic language evaluator. Your task is to assess the proficie
 4. Development (0-5): Are ideas elaborated with sufficient details and examples?
 5. Mechanics (0-5): Are grammar, spelling, and punctuation correct?
 6. Structure (0-5): Does the essay follow proper syntactic structures?
-7. Relevance (0-2): Does the essay address the given topic appropriately?
-8. Final Score (0-32): The sum of all traits.
+7. Relevance (0-5): Does the essay address the given topic appropriately?
 
 Each trait should be scored on a scale from 0 (poor) to 5 (excellent).
-Finally, calculate the total score by summing all traits, with a maximum possible score of 32.
 
 Return ONLY this JSON object with your scores (replace X with actual numbers):
 {
@@ -26,27 +23,12 @@ Return ONLY this JSON object with your scores (replace X with actual numbers):
     "development": X,
     "mechanics": X,
     "structure": X,
-    "relevance": X,
-    "final_score": X
+    "relevance": X
 }
 """
 
-def run_model_and_parse_response(essay_text, model_name):
+def run_model_and_parse_response(essay_text, model, tokenizer):
     prompt = SCORING_PROMPT + "\n\nEssay:\n" + essay_text.strip()
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_name, 
-        trust_remote_code=False,
-        device_map="auto"
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, 
-        torch_dtype=torch.float16, 
-        trust_remote_code=False,
-        device_map="auto"
-    )
-
-    model.eval()
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
@@ -76,23 +58,31 @@ def run_model_and_parse_response(essay_text, model_name):
 
     try:
         json_start = output.rfind('{')
-        print("Found JSON at index:", json_start)
+        # print("Found JSON at index:", json_start)
         json_end = output.find('}', json_start) + 1
         json_str = output[json_start:json_end]
-        print("JSON string:", repr(json_str))  # Using repr() to see hidden characters
-        print("JSON string length:", len(json_str))
-        print("First few characters:", [ord(c) for c in json_str[:10]])  # Print ASCII values of first few chars
+        # print("JSON string:", repr(json_str))  # Using repr() to see hidden characters
+        # print("JSON string length:", len(json_str))
+        # print("First few characters:", [ord(c) for c in json_str[:10]])  # Print ASCII values of first few chars
         parsed = json.loads(json_str)
-        return {
-            "organization": parsed.get("organization", 0),
-            "vocabulary": parsed.get("vocabulary", 0),
-            "style": parsed.get("style", 0),
-            "development": parsed.get("development", 0),
-            "mechanics": parsed.get("mechanics", 0),
-            "structure": parsed.get("structure", 0),
-            "relevance": parsed.get("relevance", 0),
-            "final_score": parsed.get("final_score", 0),
+
+        scores = {
+            "organization": int(min(parsed.get("organization", 0), 5)),
+            "vocabulary": int(min(parsed.get("vocabulary", 0), 5)),
+            "style": int(min(parsed.get("style", 0), 5)),
+            "development": int(min(parsed.get("development", 0), 5)),
+            "mechanics": int(min(parsed.get("mechanics", 0), 5)),
+            "structure": int(min(parsed.get("structure", 0), 5)),
+            "relevance": int(min(parsed.get("relevance", 0), 5)),
         }
+
+        # Normalize relevance score to 0-2
+        scores["relevance"] = round(scores["relevance"] / 5 * 2)
+
+        # Calculate final score
+        scores["final_score"] = scores["organization"] + scores["vocabulary"] + scores["style"] + scores["development"] + scores["mechanics"] + scores["structure"] + scores["relevance"]
+        
+        return scores
     except Exception as e:
         print("❌ Failed to parse JSON:", e)
         print("🔎 Raw output was:\n", output)

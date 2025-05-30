@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics import cohen_kappa_score
-import statsmodels.stats.inter_rater
 import json
 import os
 
@@ -27,6 +26,8 @@ def calculate_qwk(ground_truth, predictions, min_rating=0, max_rating=5):
     Returns:
         float: Quadratic Weighted Kappa score
     """
+
+    # Convert to integer
     ground_truth = np.array(ground_truth, dtype=int)
     predictions = np.array(predictions, dtype=int)
     
@@ -51,7 +52,7 @@ def evaluate_model_predictions():
     
     # Calculate QWK for each scoring trait
     traits = ['organization', 'vocabulary', 'style', 'development', 
-              'mechanics', 'structure', 'relevance']
+              'mechanics', 'structure', 'relevance', 'final_score']
     
     # Process each essay index
     for index in model_preds.index:
@@ -71,8 +72,13 @@ def evaluate_model_predictions():
         
         # Compare scores for each trait
         for trait in traits:
-            gt_score = ground_truth_scores[f"{trait}_fn"]
-            pred_score = model_scores[trait]
+            if trait == "final_score":
+                gt_score = ground_truth_scores[trait]
+                pred_score = model_scores[trait]
+            else:
+                gt_score = ground_truth_scores[f"{trait}_fn"]
+                pred_score = model_scores[trait]
+                
             print(f"{trait}: Ground Truth = {gt_score}, Predicted = {pred_score}")
             
             # Initialize trait in qwk_scores if not present

@@ -10,7 +10,7 @@ with open("main_config.json", "r") as f:
 
 # Configuration 
 ESSAY_FOLDER = config["essay_folder"]
-OUTPUT_CSV = "predictions/model_3/prompt_level_2.csv"
+OUTPUT_CSV = "predictions/model_2/prompt_level_2.csv"
 MAX_ESSAYS = config["max_essays"]
 
 def save_to_csv(results, filename):
@@ -34,7 +34,13 @@ def main():
     results = []                                                                          
     for idx, (eid, text) in enumerate(essays, 1):
         print(f"  ⏳ Processing essay {idx}/{len(essays)}: {eid}")
-        results.append(evaluate_essay(eid, text))
+
+        scores = evaluate_essay(eid, text)
+
+        # Append the scores to the results list
+        results.append(scores)
+
+        print(scores)
     
     print(f"💾 Saving results to {OUTPUT_CSV}...")
     save_to_csv(results, OUTPUT_CSV)

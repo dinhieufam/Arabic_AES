@@ -80,21 +80,7 @@ def build_prompt(rubric, essay_text):
 }}
 """
 
-def run_model_and_parse_response(model_name, rubric, essay_text):
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_name, 
-        trust_remote_code=True,
-        device_map="auto"
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, 
-        torch_dtype=torch.float16, 
-        trust_remote_code=True,
-        device_map="auto"
-    )
-
-    model.eval()
-
+def run_model_and_parse_response(rubric, essay_text, model, tokenizer):
     prompt = build_prompt(rubric, essay_text)
 
     # print(prompt)
@@ -124,7 +110,7 @@ def run_model_and_parse_response(model_name, rubric, essay_text):
     decoded_output = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
     output = decoded_output[0]
 
-    print(f"Raw Output:\n {output}")
+    # print(f"Raw Output:\n {output}")
 
     json_data = {}
     try:
@@ -132,7 +118,7 @@ def run_model_and_parse_response(model_name, rubric, essay_text):
         score_match = output.split('"score": ')[1].split(',')[0]
         # print(f"Score Match:\n {score_match}")
         json_data["score"] = float(score_match)
-        print(f"JSON Data:\n {json_data}")
+        # print(f"JSON Data:\n {json_data}")
     except Exception as e:
         json_data = {"score": 0, "justification": f"Parsing error: {str(e)}"}
 
