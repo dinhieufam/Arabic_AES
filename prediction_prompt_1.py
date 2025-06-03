@@ -12,9 +12,11 @@ You are an expert Arabic language evaluator. Your task is to assess the proficie
 4. Development (0-5): Are ideas elaborated with sufficient details and examples?
 5. Mechanics (0-5): Are grammar, spelling, and punctuation correct?
 6. Structure (0-5): Does the essay follow proper syntactic structures?
-7. Relevance (0-5): Does the essay address the given topic appropriately?
+7. Relevance (0-2): Does the essay address the given topic appropriately?
+8. Final Score (0-32): The sum of all the scores.
 
-Each trait should be scored on a scale from 0 (poor) to 5 (excellent).
+Each trait should be scored on a scale from 0 (poor) to 5 (excellent), except for relevance which is scored on a scale from 0 (poor) to 2 (excellent).
+The final score should be the sum of all the scores on a scale from 0 to 32.
 
 Return ONLY this JSON object with your scores (replace X with actual numbers):
 {
@@ -24,7 +26,8 @@ Return ONLY this JSON object with your scores (replace X with actual numbers):
     "development": X,
     "mechanics": X,
     "structure": X,
-    "relevance": X
+    "relevance": X, 
+    "final_score": X
 }
 """
 
@@ -86,14 +89,12 @@ def run_model_and_parse_response(essay_text, model, tokenizer):
             "development": int(min(parsed.get("development", 0), 5)),
             "mechanics": int(min(parsed.get("mechanics", 0), 5)),
             "structure": int(min(parsed.get("structure", 0), 5)),
-            "relevance": int(min(parsed.get("relevance", 0), 5)),
+            "relevance": int(min(parsed.get("relevance", 0), 2)),
+            "final_score": int(min(parsed.get("final_score", 0), 32))
         }
 
-        # Normalize relevance score to 0-2
-        scores["relevance"] = round(scores["relevance"] / 5 * 2)
-
         # Calculate final score
-        scores["final_score"] = scores["organization"] + scores["vocabulary"] + scores["style"] + scores["development"] + scores["mechanics"] + scores["structure"] + scores["relevance"]
+        scores["total_score"] = scores["organization"] + scores["vocabulary"] + scores["style"] + scores["development"] + scores["mechanics"] + scores["structure"] + scores["relevance"]
         
         return scores
     except Exception as e:
@@ -108,4 +109,5 @@ def run_model_and_parse_response(essay_text, model, tokenizer):
             "structure": 0,
             "relevance": 0,
             "final_score": 0,
+            "total_score": 0
         }

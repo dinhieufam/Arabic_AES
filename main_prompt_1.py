@@ -9,14 +9,14 @@ from utils import load_essays
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_2/prompt_level_1.csv"
+OUTPUT_CSV = "predictions/model_3/prompt_level_1.csv"
 MAX_ESSAYS = config["max_essays"]
 ESSAY_FOLDER = config["essay_folder"]
 MODEL_NAME = config["model_name"]
 
 def save_to_csv(results, filename):
     # Define the fieldnames for the CSV file
-    fieldnames = ["essay_id", "organization", "vocabulary", "style", "development", "mechanics", "structure", "relevance", "final_score"]
+    fieldnames = ["essay_id", "organization", "vocabulary", "style", "development", "mechanics", "structure", "relevance", "final_score", "total_score"]
 
     # Save the results to the CSV file
     with open(filename, "w", newline="", encoding="utf-8") as f:
@@ -29,11 +29,15 @@ def main():
     print(f"🔢 Limiting evaluation to {MAX_ESSAYS} essays...")
     print(f"🧠 Using model: {MODEL_NAME}")
 
+    print("🔍 Loading tokenizer...")
+
     tokenizer = AutoTokenizer.from_pretrained(
         MODEL_NAME, 
         trust_remote_code=False,
         device_map="auto"
     )
+
+    print("🔍 Loading model...")
 
     # ✅ Set pad_token to eos_token if missing
     if tokenizer.pad_token is None:
@@ -45,6 +49,8 @@ def main():
         trust_remote_code=False,
         device_map="auto",
     )
+
+    print("🔍 Setting model to evaluation mode...")
 
     model.eval()
 

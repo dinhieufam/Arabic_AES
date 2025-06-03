@@ -10,7 +10,7 @@ with open("main_config.json", "r") as f:
 
 # Configuration 
 ESSAY_FOLDER = config["essay_folder"]
-OUTPUT_CSV = "predictions/model_2/prompt_level_2.csv"
+OUTPUT_CSV = "predictions/model_3/prompt_level_2.csv"
 MAX_ESSAYS = config["max_essays"]
 
 def save_to_csv(results, filename):
@@ -19,6 +19,7 @@ def save_to_csv(results, filename):
     fieldnames.extend([f"rater_{r}" for r in RATER_SPECIALIZATIONS.keys()])
     fieldnames.extend(RUBRIC_MAPPING.keys())
     fieldnames.append("final_score")
+    fieldnames.append("total_score")
     
     # Save the results to the CSV file
     with open(filename, mode="w", encoding="utf-8-sig", newline="") as f:

@@ -176,6 +176,7 @@ def evaluate_essay(essay_id: str, text: str):
 
     # Calculate final score
     rubric_scores["final_score"] = rubric_scores["organization"] + rubric_scores["vocabulary"] + rubric_scores["style"] + rubric_scores["development"] + rubric_scores["mechanics"] + rubric_scores["structure"] + rubric_scores["relevance"]
+    rubric_scores["total_score"] = rubric_scores["final_score"]
 
     rubric_scores.update({f"rater_{k}": scores.get(k, 0) for k in RATER_SPECIALIZATIONS})
     return rubric_scores

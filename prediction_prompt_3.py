@@ -38,7 +38,7 @@ RUBRIC_GUIDES = {
     "relevance": {
         "arabic": "مدى الصلة بالموضوع",
         "guide": "1. هل المقال يعالج موضوع التواصل والتكنولوجيا؟\n2. هل تنسجم الفكرة العامة مع الموضوع؟",
-        "scoring": "0-5"
+        "scoring": "0-2"
     }
 }
 
@@ -128,7 +128,7 @@ def run_model_and_parse_response(rubric, essay_text, model, tokenizer):
         # json_data = json.loads(output.split("{", 1)[1].rsplit("}", 1)[0].join(["{", "}"]))
         score_match = output.split('"score": ')[1].split(',')[0]
         # print(f"Score Match:\n {score_match}")
-        json_data["score"] = float(score_match)
+        json_data["score"] = int(min(float(score_match), 5)) if rubric != "relevance" else int(min(float(score_match), 2))
         # print(f"JSON Data:\n {json_data}")
     except Exception as e:
         json_data = {"score": 0, "justification": f"Parsing error: {str(e)}"}

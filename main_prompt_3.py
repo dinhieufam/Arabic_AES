@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_2/prompt_level_3.csv"
+OUTPUT_CSV = "predictions/model_3/prompt_level_3.csv"
 MAX_ESSAYS = config["max_essays"]
 MODEL_NAME = config["model_name"]
 
@@ -17,7 +17,7 @@ RUBRICS = ["organization", "vocabulary", "style", "development", "mechanics", "s
 
 def save_to_csv(results, filename):
     # Define the fieldnames for the CSV file
-    fieldnames = ["essay_id"] + RUBRICS + ["final_score"]
+    fieldnames = ["essay_id"] + RUBRICS + ["final_score", "total_score"]
 
     # Write the fieldnames to the CSV file
     with open(filename, "w", newline="", encoding="utf-8") as f:
@@ -72,6 +72,7 @@ def main():
             # print(f"  📌 {rubric}: {score}")
 
         row["final_score"] = round(total)
+        row["total_score"] = round(total)
 
         print(row)
 

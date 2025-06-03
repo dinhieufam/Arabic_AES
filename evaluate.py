@@ -72,8 +72,8 @@ def evaluate_model_predictions():
         
         # Compare scores for each trait
         for trait in traits:
-            if trait == "final_score":
-                gt_score = ground_truth_scores[trait]
+            if trait == "final_score" or trait == "total_score":
+                gt_score = ground_truth_scores["final_score"]
                 pred_score = model_scores[trait]
             else:
                 gt_score = ground_truth_scores[f"{trait}_fn"]
