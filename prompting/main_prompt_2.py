@@ -1,17 +1,30 @@
 import os
 import csv
 import json
+import pandas as pd
 
 from prediction_prompt_2 import evaluate_essay, RATER_SPECIALIZATIONS, RUBRIC_MAPPING
-from utils import load_essays
 
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
 # Configuration 
-ESSAY_FOLDER = config["essay_folder"]
+DATASET_NAME = config["dataset_name"]
 OUTPUT_CSV = "predictions/model_3/prompt_level_2.csv"
 MAX_ESSAYS = config["max_essays"]
+
+def load_essays(limit=None):
+    # Read the Excel file
+    df = pd.read_excel(DATASET_NAME)
+    
+    # Get essay_id and text columns
+    essays = list(zip(df['essay_id'], df['text']))
+    
+    # Apply limit if specified
+    if limit:
+        essays = essays[:limit]
+        
+    return essays
 
 def save_to_csv(results, filename):
     # Define the fieldnames for the CSV file
@@ -29,7 +42,7 @@ def save_to_csv(results, filename):
 
 def main():
     print("🔍 Loading essays...")
-    essays = load_essays(ESSAY_FOLDER, limit=MAX_ESSAYS)
+    essays = load_essays(limit=MAX_ESSAYS)
     
     print(f"✅ Starting evaluation of {len(essays)} essays...")
     results = []                                                                          

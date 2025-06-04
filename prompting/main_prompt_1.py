@@ -1,18 +1,31 @@
 import csv
 import json
 import torch
+import pandas as pd
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from prediction_prompt_1 import run_model_and_parse_response
-from utils import load_essays
 
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
 OUTPUT_CSV = "predictions/model_3/prompt_level_1.csv"
 MAX_ESSAYS = config["max_essays"]
-ESSAY_FOLDER = config["essay_folder"]
+DATASET_NAME = config["dataset_name"]
 MODEL_NAME = config["model_name"]
+
+def load_essays(limit=None):
+    # Read the Excel file
+    df = pd.read_excel(DATASET_NAME)
+    
+    # Get essay_id and text columns
+    essays = list(zip(df['essay_id'], df['text']))
+    
+    # Apply limit if specified
+    if limit:
+        essays = essays[:limit]
+        
+    return essays
 
 def save_to_csv(results, filename):
     # Define the fieldnames for the CSV file
@@ -25,7 +38,6 @@ def save_to_csv(results, filename):
         writer.writerows(results)
 
 def main():
-
     print(f"🔢 Limiting evaluation to {MAX_ESSAYS} essays...")
     print(f"🧠 Using model: {MODEL_NAME}")
 
@@ -46,7 +58,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME, 
         torch_dtype="auto", 
-        trust_remote_code=False,
+        trust_remote_code=True,
         device_map="auto",
     )
 
@@ -54,7 +66,7 @@ def main():
 
     model.eval()
 
-    essays = load_essays(ESSAY_FOLDER, limit=MAX_ESSAYS)
+    essays = load_essays(limit=MAX_ESSAYS)
     results = []
 
     for i, (essay_id, text) in enumerate(essays, start=1):

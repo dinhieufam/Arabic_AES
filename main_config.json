@@ -1,6 +1,6 @@
 {
-  "essay_folder": "essays",
+  "dataset_name": "dataset.xlsx",
   "max_essays": 195,
-  "model_name": "ALLaM-AI/ALLaM-7B-Instruct-preview",
-  "ground_truth": "dataset.csv"
+  "model_name": "Qwen/Qwen2.5-7B-Instruct",
+  "ground_truth": "dataset.xlsx"
 }

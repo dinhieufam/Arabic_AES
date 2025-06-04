@@ -1,19 +1,33 @@
 import csv
 import json
 import torch
+import pandas as pd
 
 from prediction_prompt_3 import run_model_and_parse_response
-from utils import load_essays
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_3/prompt_level_3.csv"
+OUTPUT_CSV = "predictions/model_2/prompt_level_3.csv"
 MAX_ESSAYS = config["max_essays"]
+DATASET_NAME = config["dataset_name"]
 MODEL_NAME = config["model_name"]
 
 RUBRICS = ["organization", "vocabulary", "style", "development", "mechanics", "structure", "relevance"]
+
+def load_essays(limit=None):
+    # Read the Excel file
+    df = pd.read_excel(DATASET_NAME)
+    
+    # Get essay_id and text columns
+    essays = list(zip(df['essay_id'], df['text']))
+    
+    # Apply limit if specified
+    if limit:
+        essays = essays[:limit]
+        
+    return essays
 
 def save_to_csv(results, filename):
     # Define the fieldnames for the CSV file
@@ -47,7 +61,7 @@ def main():
 
     print(f"🔢 Limiting evaluation to {MAX_ESSAYS} essays...")
 
-    essays = load_essays("essays", limit=MAX_ESSAYS)
+    essays = load_essays(limit=MAX_ESSAYS)
     results = []
 
     for i, (essay_id, text) in enumerate(essays):
@@ -58,10 +72,6 @@ def main():
             # Run the model and parse the response
             result = run_model_and_parse_response(rubric, text, model, tokenizer)
             score = round(result.get("score", 0))
-
-            # Normalize relevance score to 0-2
-            if rubric == "relevance":
-                score = round(score / 5 * 2)
 
             # Add the score to the row
             row[rubric] = score

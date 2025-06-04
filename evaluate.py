@@ -43,28 +43,25 @@ def evaluate_model_predictions():
     
     # Read the QAES ground truth data
     qaes_data = pd.read_excel(GROUND_TRUTH_PATH, index_col="essay_id")
-
-    # Remove 'A' from model predictions index
-    model_preds.index = model_preds.index.str.replace('A', '').astype(int)
     
     # Initialize dictionary to store QWK scores for each trait
     qwk_scores = {}
     
     # Calculate QWK for each scoring trait
     traits = ['organization', 'vocabulary', 'style', 'development', 
-              'mechanics', 'structure', 'relevance', 'final_score']
+              'mechanics', 'structure', 'relevance', 'final_score', 'total_score']
     
     # Process each essay index
     for index in model_preds.index:
-        print(f"\nProcessing essay {index}:")
+        # print(f"\nProcessing essay {index}:")
         
         # Skip if essay not in model predictions
         if index not in model_preds.index:
             print(f"Essay {index} not found in model predictions, skipping...")
             continue
         
-        print(qaes_data.index)
-        print(model_preds.index)
+        # print(qaes_data.index)
+        # print(model_preds.index)
 
         # Get scores for this essay
         ground_truth_scores = qaes_data.loc[index]
@@ -76,10 +73,10 @@ def evaluate_model_predictions():
                 gt_score = ground_truth_scores["final_score"]
                 pred_score = model_scores[trait]
             else:
-                gt_score = ground_truth_scores[f"{trait}_fn"]
+                gt_score = ground_truth_scores[trait]
                 pred_score = model_scores[trait]
                 
-            print(f"{trait}: Ground Truth = {gt_score}, Predicted = {pred_score}")
+            # print(f"{trait}: Ground Truth = {gt_score}, Predicted = {pred_score}")
             
             # Initialize trait in qwk_scores if not present
             if trait not in qwk_scores:
