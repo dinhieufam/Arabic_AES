@@ -26,7 +26,7 @@ class MultiRubricClassifier(nn.Module):
             nn.Linear(self.config.hidden_size, 6),  # mechanics
             nn.Linear(self.config.hidden_size, 6),  # structure
             nn.Linear(self.config.hidden_size, 3),  # relevance
-            nn.Linear(self.config.hidden_size, 32),  # final_score
+            nn.Linear(self.config.hidden_size, 33),  # final_score
         ])
 
     def forward(self, input_ids, attention_mask=None, labels=None):
