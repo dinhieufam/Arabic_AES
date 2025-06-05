@@ -20,3 +20,11 @@
     - model_4 prompt_1: good
     - model_4 prompt_2: output is unstable, do not follow the JSON format. Maybe it is because the prompt is in English. Because Jais in an Arabic LLM, maybe we could try Arabic prompt
     - model_4 prompt_3: all 0, even worse than using prompt_2
+
+- Instruction-Tuning:
+    - Code available
+    - To inference just load the model checkpoint and use the code in prompting folder
+
+- Label-Supervised Learning:
+    - Finetuning code available
+    - Inference code available

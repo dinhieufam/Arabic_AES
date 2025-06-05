@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_2/prompt_level_3.csv"
+OUTPUT_CSV = "predictions/model_3/prompt_level_3.csv"
 MAX_ESSAYS = config["max_essays"]
 DATASET_NAME = config["dataset_name"]
 MODEL_NAME = config["model_name"]
