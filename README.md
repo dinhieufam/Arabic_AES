@@ -5,7 +5,9 @@
 - model_2: Qwen/Qwen2.5-7B-Instruct
 - model_3: ALLaM-AI/ALLaM-7B-Instruct-preview
 - model_4: inceptionai/jais-family-13b-chat
-- model_5: FreedomIntelligence/AceGPT-7B-chat
+- model_5: QCRI/Fanar-1-9B-Instruct
+- model_6: CohereLabs/aya-101
+<!-- - model_5: FreedomIntelligence/AceGPT-7B-chat -->
 <!-- - model_6: mistralai/Mistral-7B-Instruct-v0.2
 - model_7: NousResearch/Hermes-2-Pro-Llama-3-8B -->
 

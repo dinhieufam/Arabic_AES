@@ -1,6 +1,6 @@
 {
   "dataset_name": "dataset.xlsx",
   "max_essays": 195,
-  "model_name": "ALLaM-AI/ALLaM-7B-Instruct-preview",
+  "model_name": "QCRI/Fanar-1-9B-Instruct",
   "ground_truth": "dataset.xlsx"
 }

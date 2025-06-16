@@ -1,7 +1,7 @@
 {
   "paths": {
     "ground_truth": "dataset.xlsx",
-    "model_predictions": "predictions/model_3/prompt_level_3.csv",
-    "output": "evaluation_results/model_3/prompt_level_3.csv"
+    "model_predictions": "predictions/model_5/prompt_level_3.csv",
+    "output": "evaluation_results/model_5/prompt_level_3.csv"
   }
 }

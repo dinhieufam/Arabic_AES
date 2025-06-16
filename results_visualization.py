@@ -6,10 +6,11 @@ evaluation_path = [
     ["evaluation_results/model_1/prompt_level_1.csv", "evaluation_results/model_1/prompt_level_2.csv", "evaluation_results/model_1/prompt_level_3.csv"],
     ["evaluation_results/model_2/prompt_level_1.csv", "evaluation_results/model_2/prompt_level_2.csv", "evaluation_results/model_2/prompt_level_3.csv"],
     ["evaluation_results/model_3/prompt_level_1.csv", "evaluation_results/model_3/prompt_level_2.csv", "evaluation_results/model_3/prompt_level_3.csv"],
-    ["evaluation_results/model_4/prompt_level_1.csv", "evaluation_results/model_4/prompt_level_2.csv", "evaluation_results/model_4/prompt_level_3.csv"]
+    ["evaluation_results/model_4/prompt_level_1.csv", "evaluation_results/model_4/prompt_level_2.csv", "evaluation_results/model_4/prompt_level_3.csv"],
+    ["evaluation_results/model_5/prompt_level_1.csv", "evaluation_results/model_5/prompt_level_2.csv", "evaluation_results/model_5/prompt_level_3.csv"]
 ]
 
-MODELS = ["Qwen1.5-1.8B-Chat", "Qwen2.5-7B-Instruct", "ALLaM-7B-Instruct-preview", "jais-family-13b-chat"]
+MODELS = ["Qwen1.5-1.8B-Chat", "Qwen2.5-7B-Instruct", "ALLaM-7B-Instruct-preview", "jais-family-13b-chat", "Fanar-1-9B-Instruct"]
 
 # Load data into a dictionary
 data = {}

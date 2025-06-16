@@ -1,3 +1,6 @@
+# Ignore specific files
+prompting/secret_key.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
