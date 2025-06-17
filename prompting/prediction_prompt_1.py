@@ -1,5 +1,6 @@
 import torch
 import json
+from util import extract_scores
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -29,6 +30,7 @@ Return ONLY this JSON object with your scores (replace X with actual numbers):
     "relevance": X, 
     "final_score": X
 }
+
 """
 
 def run_model_and_parse_response(essay_text, model, tokenizer):
@@ -71,6 +73,9 @@ def run_model_and_parse_response(essay_text, model, tokenizer):
     output = decoded_output[0]
 
     # print("📤 Model output:\n", decoded_output[0])
+    formated = extract_scores(output)
+    print(formated)
+    return formated
 
     try:
         json_start = output.rfind('{')

@@ -9,7 +9,7 @@ from prediction_prompt_1 import run_model_and_parse_response
 with open("main_config.json", "r") as f:
     config = json.load(f)
 
-OUTPUT_CSV = "predictions/model_5/prompt_level_1.csv"
+OUTPUT_CSV = "predictions/model_6/prompt_level_1.csv"
 MAX_ESSAYS = config["max_essays"]
 DATASET_NAME = config["dataset_name"]
 MODEL_NAME = config["model_name"]

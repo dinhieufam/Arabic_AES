@@ -1,6 +1,6 @@
 {
   "dataset_name": "dataset.xlsx",
   "max_essays": 195,
-  "model_name": "QCRI/Fanar-1-9B-Instruct",
+  "model_name": "meta-llama/Llama-2-7b-chat-hf",
   "ground_truth": "dataset.xlsx"
 }

@@ -6,7 +6,8 @@
 - model_3: ALLaM-AI/ALLaM-7B-Instruct-preview
 - model_4: inceptionai/jais-family-13b-chat
 - model_5: QCRI/Fanar-1-9B-Instruct
-- model_6: CohereLabs/aya-101
+- model_6: meta-llama/Llama-2-7b-chat-hf
+<!-- - model_7: CohereLabs/aya-101 -->
 <!-- - model_5: FreedomIntelligence/AceGPT-7B-chat -->
 <!-- - model_6: mistralai/Mistral-7B-Instruct-v0.2
 - model_7: NousResearch/Hermes-2-Pro-Llama-3-8B -->
@@ -22,6 +23,8 @@
     - model_4 prompt_1: good
     - model_4 prompt_2: output is unstable, do not follow the JSON format. Maybe it is because the prompt is in English. Because Jais in an Arabic LLM, maybe we could try Arabic prompt
     - model_4 prompt_3: all 0, even worse than using prompt_2
+
+    - llama2 has really bad output. it does not follow the required JSON format. for the prompt 1, i have to load scores in a different way. and for the prompt 2, i have to assign it manually from the generation. prompt 3, return no sense output
 
 - Instruction-Tuning:
     - Code available

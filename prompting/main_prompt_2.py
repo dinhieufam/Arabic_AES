@@ -10,7 +10,7 @@ with open("main_config.json", "r") as f:
 
 # Configuration 
 DATASET_NAME = config["dataset_name"]
-OUTPUT_CSV = "predictions/model_3/prompt_level_2.csv"
+OUTPUT_CSV = "predictions/model_6/prompt_level_2.csv"
 MAX_ESSAYS = config["max_essays"]
 
 def load_essays(limit=None):
