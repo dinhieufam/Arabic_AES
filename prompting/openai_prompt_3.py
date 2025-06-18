@@ -49,40 +49,36 @@ RUBRIC_GUIDES = {
     }
 }
 
-def truncate_text(text, max_tokens=1500):
-    words = text.split()
-    return ' '.join(words[:max_tokens])
-
-def build_prompt(rubric, essay_text):
-    rubric_info = RUBRIC_GUIDES[rubric]
-
-    with open(f'rubric_examples/{rubric}.txt', 'r', encoding='utf-8') as f:
+def build_system_prompt(rubric, max_tokens=7000):
+    info = RUBRIC_GUIDES[rubric]
+    with open(f"rubric_examples/{rubric}.txt", encoding='utf-8') as f:
         example = f.read()
 
-    return f"""
-أنت مقيم لغوي مختص في تقييم مهارة [{rubric_info['arabic']}] في المقالات المكتوبة باللغة العربية.
+    # Truncate rubric example if too long
+    if len(example) > 3000:
+        print(f"⚠️ Truncating example for rubric: {rubric}")
+        example = example[:3000] + "\n...[truncated]"
+
+    return f"""أنت مقيم لغوي مختص في تقييم مهارة [{info['arabic']}] في المقالات المكتوبة باللغة العربية.
 
 ستقوم بتقييم المقال بناءً على هذه المهارة فقط.
 
 يرجى اتباع الخطوات التالية:
 1. اقرأ المقال جيداً.
 2. اتبع دليل التقييم التالي:
-{rubric_info['guide']}
-3. حدد درجة من {rubric_info['scoring']}.
+{info['guide']}
+3. حدد درجة من {info['scoring']}.
 4. قدم مبررات واضحة لقرارك.
 
 يتضمن المعيار أدناه:
 - وصفًا لما يقيسه
 - ثلاثة مستويات كأمثلة (الدرجات: ١، ٣، ٥)
+
 \"\"\"
 {example}
 \"\"\"
-🎯 استخدم هذه الأمثلة لمقارنة المقال الذي تقوم بتقييمه وتبرير النتيجة وفقًا لذلك.
 
-✏️ المقال:
-\"\"\"
-{essay_text}
-\"\"\"
+🎯 استخدم هذه الأمثلة لمقارنة المقال الذي تقوم بتقييمه وتبرير النتيجة وفقًا لذلك.
 
 أجب بصيغة JSON فقط بهذا الشكل:
 {{
@@ -91,12 +87,25 @@ def build_prompt(rubric, essay_text):
 }}
 """
 
-def get_gpt4_response(prompt):
+def build_user_prompt(essay_text, max_chars=2000):
+    # Truncate long essay
+    if len(essay_text) > max_chars:
+        print("⚠️ Truncating essay text")
+        essay_text = essay_text[:max_chars] + "\n...[truncated]"
+
+    return f"""✏️ المقال:
+\"\"\"
+{essay_text}
+\"\"\"
+"""
+
+
+def get_gpt4_response(system_prompt, user_prompt):
     while True:
         try:
             messages = [
-                {"role": "system", "content": "You are a helpful and precise Arabic essay scoring assistant."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ]
             response = openai.ChatCompletion.create(
                 model="gpt-4",
@@ -117,13 +126,10 @@ for essay_id, essay_text in zip(df['essay_id'], df['text']):
     total = 0
 
     for rubric in RUBRICS:
-        essay_text = truncate_text(essay_text, 100)
-        prompt = build_prompt(rubric, essay_text)
+        system_prompt = build_system_prompt(rubric)
+        user_prompt = build_user_prompt(essay_text)
 
-        # print("🖨️ Prompt" + prompt)
-
-        output = get_gpt4_response(prompt)
-
+        output = get_gpt4_response(system_prompt, user_prompt)
         print(f"📜 GPT Output for {rubric}:\n{output}")
 
         try:
@@ -155,4 +161,3 @@ with open(output_file, "w", newline="", encoding="utf-8") as f:
     writer.writerows(results)
 
 print(f"💾 Saved GPT-4 results to {output_file}")
-
