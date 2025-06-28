@@ -4,9 +4,11 @@ This repository contains the code and resources for our research on **trait-spec
 
 ## 📋 Abstract
 
-This paper presents a novel prompt engineering framework for trait-specific Automatic Essay Scoring (AES) in Arabic, leveraging large language models (LLMs) under zero-shot and few-shot configurations. Addressing the scarcity of scalable, linguistically informed AES tools for Arabic, we introduce a three-tier prompting strategy: standard, hybrid, and rubric-guided that guides LLMs in evaluating distinct language proficiency traits such as organization, vocabulary, development, and style. 
+This paper presents a novel prompt engineering framework for trait specific Automatic Essay Scoring (AES) in Arabic, leveraging large language models (LLMs) under zero-shot and few-shot configurations. Addressing the scarcity of scalable, linguistically informed AES tools for Arabic, we introduce a three-tier prompting strategy standard, hybrid, and rubric guided that guides LLMs in evaluating distinct language proficiency traits such as organization, vocabulary, development, and style. The hybrid approach simulates multi agent evaluation with trait specialist raters, while the rubric guided method incorporates scored exemplars to enhance model alignment. 
 
-The hybrid approach simulates multi-agent evaluation with trait specialist raters, while the rubric-guided method incorporates scored exemplars to enhance model alignment. Without any model fine-tuning, we evaluate seven LLMs on the QAES dataset, the first publicly available Arabic AES resource with trait-level annotations. Experimental results using Quadratic Weighted Kappa (QWK) show that Fanar-1-9B-Instruct achieves the highest trait-level agreement in both zero and few-shot prompting (QWK = 0.28), followed by ALLaM-7B-Instruct-preview (QWK = 0.26), with rubric-guided prompting yielding consistent gains across all traits and models.
+Without any model fine-tuning, we evaluate seven LLMs on the QAES dataset, the first publicly available Arabic AES resource with trait level annotations. Experimental results using Quadratic Weighted Kappa (QWK) show that Fanar-1-9B-Instruct achieves the highest trait level agreement in both zero and few-shot prompting(QWK = 0.28), followed by ALLaM-7B-Instruct-preview (QWK = 0.26), with rubric guided prompting yielding consistent gains across all traits and models. Discourse-level traits such as Development and Style showed the greatest improvements. 
+
+These findings confirm that structured prompting not model scale alone enables effective AES in Arabic. Our study presents the first comprehensive framework for proficiency oriented Arabic AES and sets the foundation for scalable assessment in low resource educational contexts.
 
 ## 🚀 Key Features
 
