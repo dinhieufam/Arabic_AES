@@ -18,7 +18,7 @@ MODELS = ["Qwen1.5-1.8B-Chat", "Qwen2.5-7B-Instruct", "ALLaM-7B-Instruct-preview
 
 # Define aspects
 aspects = ['organization', 'vocabulary', 'style', 'development',
-           'mechanics', 'structure', 'relevance', 'final_score', 'total_score']
+           'mechanics', 'structure', 'relevance', 'total_score']
 
 # Prepare data with manual positions by prompt level
 rows = []

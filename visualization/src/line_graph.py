@@ -24,7 +24,7 @@ for i, model_paths in enumerate(evaluation_path, 1):
         data[model_name].append(df.iloc[0])  # Assume one row per file
 
 # Aspects to plot
-aspects = ['organization', 'vocabulary', 'style', 'development', 'mechanics', 'structure', 'relevance', 'final_score', 'total_score']
+aspects = ['organization', 'vocabulary', 'style', 'development', 'mechanics', 'structure', 'relevance', 'total_score']
 
 # Create a 4x2 subplot figure
 fig, axes = plt.subplots(3, 3, figsize=(20, 16), sharex=True)
@@ -44,6 +44,8 @@ for idx, aspect in enumerate(aspects):
     ax.set_xlabel('Prompt Level')
     ax.set_ylabel('Score')
     ax.legend()
+
+axes[8].axis('off')
 
 # Adjust layout and save
 plt.tight_layout()
