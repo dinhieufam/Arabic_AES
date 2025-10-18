@@ -1,6 +1,6 @@
 {
   "dataset_name": "dataset.xlsx",
   "max_essays": 195,
-  "model_name": "meta-llama/Llama-2-7b-chat-hf",
+  "model_name": "Qwen/Qwen3VL-7B-Instruct",
   "ground_truth": "dataset.xlsx"
 }
