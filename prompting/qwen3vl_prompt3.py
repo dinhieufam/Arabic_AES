@@ -72,9 +72,9 @@ def build_prompt(rubric, essay_text):
 \"\"\"
 {example}
 \"\"\"
-🎯 استخدم هذه الأمثلة لمقارنة المقال الذي تقوم بتقييمه وتبرير النتيجة وفقًا لذلك.
+استخدم هذه الأمثلة لمقارنة المقال الذي تقوم بتقييمه وتبرير النتيجة وفقًا لذلك.
 
-✏️ المقال:
+المقال:
 \"\"\"
 {essay_text}
 \"\"\"
@@ -134,7 +134,7 @@ df = pd.read_excel("../dataset.xlsx")
 results = []
 
 for essay_id, essay_text in zip(df['essay_id'], df['text']):
-    print("😍 Processing the essay with ID: ", essay_id)
+    print("Processing the essay with ID: ", essay_id)
     row = {"essay_id": essay_id}
     total = 0
     for rubric in RUBRICS:

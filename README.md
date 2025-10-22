@@ -1,21 +1,19 @@
 # Arabic Automatic Essay Scoring with Prompt Engineering
 
-This repository contains the code and resources for our research on **trait-specific Automatic Essay Scoring (AES) in Arabic using Large Language Models (LLMs)** through novel prompt engineering techniques.
+This repository contains the code and resources for research on **trait-specific Automatic Essay Scoring (AES) in Arabic using Large Language Models (LLMs)** through novel prompt engineering techniques.
 
 ## 📋 Abstract
 
-This paper presents a novel prompt engineering framework for trait specific Automatic Essay Scoring (AES) in Arabic, leveraging large language models (LLMs) under zero-shot and few-shot configurations. Addressing the scarcity of scalable, linguistically informed AES tools for Arabic, we introduce a three-tier prompting strategy standard, hybrid, and rubric guided that guides LLMs in evaluating distinct language proficiency traits such as organization, vocabulary, development, and style. The hybrid approach simulates multi agent evaluation with trait specialist raters, while the rubric guided method incorporates scored exemplars to enhance model alignment. 
+This paper presents a novel prompt engineering framework for trait-specific Automatic Essay Scoring (AES) in Arabic, leveraging large language models (LLMs) under zero-shot and few-shot configurations. Addressing the scarcity of scalable, linguistically informed AES tools for Arabic, we introduce a three-tier prompting strategy: standard, hybrid, and rubric-guided that guides LLMs in evaluating distinct language proficiency traits such as organization, vocabulary, development, and style. The hybrid approach simulates multi-agent evaluation with trait specialist raters, while the rubric-guided method incorporates scored exemplars to enhance model alignment.
 
-Without any model fine-tuning, we evaluate seven LLMs on the QAES dataset, the first publicly available Arabic AES resource with trait level annotations. Experimental results using Quadratic Weighted Kappa (QWK) show that Fanar-1-9B-Instruct achieves the highest trait level agreement in both zero and few-shot prompting(QWK = 0.28), followed by ALLaM-7B-Instruct-preview (QWK = 0.26), with rubric guided prompting yielding consistent gains across all traits and models. Discourse-level traits such as Development and Style showed the greatest improvements. 
-
-These findings confirm that structured prompting not model scale alone enables effective AES in Arabic. Our study presents the first comprehensive framework for proficiency oriented Arabic AES and sets the foundation for scalable assessment in low resource educational contexts.
+These findings confirm that structured prompting, not model scale alone, enables effective AES in Arabic. This study presents the first comprehensive framework for proficiency-oriented Arabic AES and sets the foundation for scalable assessment in low-resource educational contexts.
 
 ## 🚀 Key Features
 
 - **Three-tier prompting strategy**: Standard, Hybrid, and Rubric-guided approaches
 - **Trait-specific evaluation**: Organization, Vocabulary, Development, Style, Structure, Mechanics, and Relevance
 - **Zero-shot and few-shot configurations**: No model fine-tuning required
-- **Comprehensive evaluation**: Testing on 7 different LLMs
+- **Comprehensive evaluation**: Testing on 8 different LLMs
 - **First Arabic AES framework**: Specialized for Arabic language proficiency assessment
 
 ## 📊 Dataset
@@ -25,7 +23,7 @@ This project uses the **QAES dataset** - the first publicly available Arabic AES
 ## 🏗️ Project Structure
 
 ```
-ArabicNLP_2025/
+Arabic_AES/
 ├── README.md                    # Project documentation
 ├── dataset.csv                  # Main dataset file
 ├── dataset.xlsx                 # Dataset in Excel format
@@ -34,11 +32,9 @@ ArabicNLP_2025/
 ├── evaluate.py                 # Main evaluation script
 ├── essays/                     # Essay corpus
 ├── evaluation_results/         # Model evaluation outputs
-│   ├── gpt4/                   # GPT-4 results
-│   ├── model_1/ to model_6/    # Other LLM results
+│   ├── ...                   
 ├── predictions/                # Model predictions
-│   ├── gpt4/                   # GPT-4 predictions
-│   ├── model_1/ to model_6/    # Other LLM predictions
+│   ├── ...                   
 ├── prompting/                  # Prompt engineering scripts
 │   ├── main_prompt_*.py        # Main prompting strategies
 │   ├── *_prompt_*.py          # Model-specific prompts
@@ -52,28 +48,10 @@ ArabicNLP_2025/
 │   ├── style.txt
 │   └── vocabulary.txt
 └── visualization/             # Results visualization
-    └── src/
-        ├── box_grid.py
-        └── line_graph.py
-```
-
-## 🔧 Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/dinhieufam/ArabicNLP_2025.git
-cd ArabicNLP_2025
+    └── ...
 ```
 
 ## 🏃‍♂️ Usage
-
-### Quick Start
-
-1. **Configure your settings** in `evaluate.json`
-2. **Run evaluation**:
-```bash
-python evaluate.py
-```
 
 ### Prompting Strategies
 
@@ -101,6 +79,7 @@ For different LLMs, use the corresponding scripts:
 - **JAIS models**: `jais_prompt_*.py`
 - **Llama models**: `llama_prompt_*.py`
 - **Aya models**: `aya_prompt_*.py`
+- **Qwen3-VL models**: `qwen3vl_prompt_*.py`
 
 ### Visualization
 
@@ -125,36 +104,3 @@ python visualization/src/line_graph.py
 5. **Structure**: Sentence and paragraph construction
 6. **Mechanics**: Grammar, spelling, and punctuation
 7. **Relevance**: Topic adherence and content appropriateness
-
-<!-- ## 📄 Citation
-
-If you use this work in your research, please cite:
-
-```bibtex
-@article{your_paper_2025,
-  title={Arabic Automatic Essay Scoring with Prompt Engineering: A Trait-Specific Approach},
-  author={Your Name and Co-authors},
-  journal={Your Journal},
-  year={2025}
-}
-``` -->
-
-<!-- ## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- QAES dataset contributors
-- The Arabic NLP research community
-- All LLM providers for API access -->
-
-<!-- ## 📞 Contact
-
-For questions or collaborations, please contact:
-- Email: your.email@university.edu
-- GitHub: [@yourusername](https://github.com/yourusername)
-
----
-
-**Note**: This is the first comprehensive framework for proficiency-oriented Arabic AES, setting the foundation for scalable assessment in low-resource educational contexts. -->
