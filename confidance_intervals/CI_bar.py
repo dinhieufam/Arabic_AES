@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load your CSV file
-df = pd.read_csv("/Users/salimalmandhari/Documents/Project/ArabicNLP_2025-extended/qwk_ci_summary.csv")
+df = pd.read_csv("qwk_ci_summary.csv")
 
 # Clean and standardize column names if needed
 df.columns = [col.strip() for col in df.columns]

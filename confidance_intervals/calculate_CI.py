@@ -6,8 +6,8 @@ from sklearn.metrics import cohen_kappa_score
 from tqdm import tqdm   
 
 # Config
-ground_truth_path = '/Users/salimalmandhari/Documents/Project/ArabicNLP_2025-extended/dataset.csv'
-predictions_root = '/Users/salimalmandhari/Downloads/Arabic_AES-master/predictions'  # this directory contains 8 model subfolders
+ground_truth_path = '../dataset.csv'
+predictions_root = '../predictions'  # this directory contains 8 model subfolders
 output_path = 'qwk_ci_summary.csv'
 traits = ['organization', 'vocabulary', 'style', 'development',
           'mechanics', 'structure', 'relevance', 'final_score']
