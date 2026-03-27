@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 
 # Define input paths and model names
 evaluation_path = [
-    ["evaluation_results/model_1/prompt_level_1.csv", "evaluation_results/model_1/prompt_level_2.csv", "evaluation_results/model_1/prompt_level_3.csv"],
-    ["evaluation_results/model_2/prompt_level_1.csv", "evaluation_results/model_2/prompt_level_2.csv", "evaluation_results/model_2/prompt_level_3.csv"],
-    ["evaluation_results/model_3/prompt_level_1.csv", "evaluation_results/model_3/prompt_level_2.csv", "evaluation_results/model_3/prompt_level_3.csv"],
-    ["evaluation_results/model_4/prompt_level_1.csv", "evaluation_results/model_4/prompt_level_2.csv", "evaluation_results/model_4/prompt_level_3.csv"],
-    ["evaluation_results/model_5/prompt_level_1.csv", "evaluation_results/model_5/prompt_level_2.csv", "evaluation_results/model_5/prompt_level_3.csv"],
-    ["evaluation_results/model_6/prompt_level_1.csv", "evaluation_results/model_6/prompt_level_2.csv", "evaluation_results/model_6/prompt_level_3.csv"],
+    ["evaluation_results/allam/prompt_level_1.csv", "evaluation_results/allam/prompt_level_2.csv", "evaluation_results/allam/prompt_level_3.csv"],
+    ["evaluation_results/fanar/prompt_level_1.csv", "evaluation_results/fanar/prompt_level_2.csv", "evaluation_results/fanar/prompt_level_3.csv"],
+    ["evaluation_results/jais/prompt_level_1.csv", "evaluation_results/jais/prompt_level_2.csv", "evaluation_results/jais/prompt_level_3.csv"],
+    ["evaluation_results/llama/prompt_level_1.csv", "evaluation_results/llama/prompt_level_2.csv", "evaluation_results/llama/prompt_level_3.csv"],
+    ["evaluation_results/qwen3vl/prompt_level_1.csv", "evaluation_results/qwen3vl/prompt_level_2.csv", "evaluation_results/qwen3vl/prompt_level_3.csv"],
+    ["evaluation_results/qwen15/prompt_level_1.csv", "evaluation_results/qwen15/prompt_level_2.csv", "evaluation_results/qwen15/prompt_level_3.csv"],
+    ["evaluation_results/qwen25/prompt_level_1.csv", "evaluation_results/qwen25/prompt_level_2.csv", "evaluation_results/qwen25/prompt_level_3.csv"],
     ["evaluation_results/gpt4/prompt_level_1.csv", "evaluation_results/gpt4/prompt_level_2.csv"]
 ]
 
-MODELS = ["Qwen1.5-1.8B-Chat", "Qwen2.5-7B-Instruct", "ALLaM-7B-Instruct-preview",
-          "jais-family-13b-chat", "Fanar-1-9B-Instruct", "Llama-2-7b-chat-hf", "ChatGPT-4"]
+MODELS = ["ALLaM-7B-Instruct-preview", "Fanar-1-9B-Instruct", "jais-family-13b-chat", "Llama-2-7b-chat-hf", "Qwen3-VL-8B-Instruct", "Qwen1.5-1.8B-Chat", "Qwen2.5-7B-Instruct", "ChatGPT-4"]
 
 # Define aspects
 aspects = ['organization', 'vocabulary', 'style', 'development',
@@ -25,7 +25,8 @@ rows = []
 for model_idx, model_paths in enumerate(evaluation_path):
     model_name = MODELS[model_idx]
     for level in range(1, 4):
-        if model_idx == 6 and level == 3:
+        # Skip if this model doesn't have data for this prompt level
+        if level - 1 >= len(model_paths):
             continue
         df = pd.read_csv(model_paths[level - 1])
         values = df.iloc[0][aspects].astype(float)
